@@ -1,7 +1,16 @@
 import csv
-from settings import runtime_configs, input_csv_path, output_csv_path
+from datetime import datetime
+from settings import input_csv_path, output_csv_path, sorting_algorithm_names, shared_library_files, repeat_time
+from runtime_measurements import CppSortRuntime, NumpySortRuntime
 
-with open(input_csv_path) as f, open(output_csv_path, mode='w', newline='') as out_file:
+# Generate a timestamp
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+# Modify the output file path to include the timestamp
+output_csv_path_with_timestamp = output_csv_path.replace('.csv', f'_{timestamp}.csv')
+
+runtime_configs = list(zip(sorting_algorithm_names, [CppSortRuntime(f"libs/{shared_lib_filename}") for shared_lib_filename in shared_library_files] + [NumpySortRuntime()]))
+
+with open(input_csv_path) as f, open(output_csv_path_with_timestamp, mode='w', newline='') as out_file:
     reader = csv.reader(f)
     writer = csv.writer(out_file)
     
@@ -11,6 +20,6 @@ with open(input_csv_path) as f, open(output_csv_path, mode='w', newline='') as o
     for data_index, row in enumerate(reader):
         data = list(map(int, row))
         for name, runtime in runtime_configs:
-            result = runtime.measure_runtime(data, 10)
+            result = runtime.measure_runtime(data, repeat_time)
             writer.writerow([data_index, name, result])
             print(f"Data set #{data_index} - {name}: {result}")
