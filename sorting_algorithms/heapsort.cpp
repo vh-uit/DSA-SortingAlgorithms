@@ -1,8 +1,7 @@
 extern "C"
 {
-    void heapify(int arr[], int n, int i)
+    void heapify(double arr[], int n, int i)
     {
-
         // Initialize largest as root
         int largest = i;
 
@@ -27,7 +26,7 @@ extern "C"
         // If largest is not root
         if (largest != i)
         {
-            int temp = arr[i];
+            double temp = arr[i];
             arr[i] = arr[largest];
             arr[largest] = temp;
 
@@ -37,9 +36,8 @@ extern "C"
     }
 
     // Main function to do heap sort
-    void sort(int arr[], int n)
+    void sort(double arr[], int n)
     {
-
         // Build heap (rearrange array)
         for (int i = n / 2 - 1; i >= 0; i--)
         {
@@ -49,9 +47,8 @@ extern "C"
         // One by one extract an element from heap
         for (int i = n - 1; i > 0; i--)
         {
-
             // Move current root to end
-            int temp = arr[0];
+            double temp = arr[0];
             arr[0] = arr[i];
             arr[i] = temp;
 

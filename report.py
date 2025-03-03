@@ -26,13 +26,19 @@ def plot_multiple_columns(df):
             else:
                 avg_runtimes[data_set].append(0)
 
-    bar_width = 0.1
+    bar_width = 0.05  # Smaller bar width
     index = range(len(algorithms))
     plt.figure(figsize=(12, 8))
-    colors = plt.cm.get_cmap('tab10', len(data_sets))
 
     for i, data_set in enumerate(data_sets):
-        plt.bar([p + bar_width * i for p in index], avg_runtimes[data_set], width=bar_width, label=f'Data set {data_set}', color=colors(i))
+        if data_set == 0:
+            color = 'darkgreen'
+        elif data_set == 9:
+            color = 'darkred'
+        elif 1 <= data_set <= 8:
+            color_intensity = 0.1 + (data_set - 1) * 0.1
+            color = (0, 0, 1 - color_intensity, 1)  # Blue to orange gradient
+        plt.bar([p + bar_width * i for p in index], avg_runtimes[data_set], width=bar_width, label=f'Data set {data_set}', color=color)
 
     plt.xlabel('Algorithm')
     plt.ylabel('Average Runtime (s)')

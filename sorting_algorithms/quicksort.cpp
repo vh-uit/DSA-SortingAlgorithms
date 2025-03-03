@@ -1,15 +1,10 @@
-#include <iostream>
-#include <stdlib.h>
-
 extern "C"
 {
-    
-
-    void _quicksort(int arr[], int low, int high)
+    void _quicksort(double arr[], int low, int high)
     {
         if (low < high)
         {
-            int pivot = arr[(low + high) >> 1];
+            double pivot = arr[(low + high) >> 1];
             int i = low-1, j = high+1;
             while (true)
             {
@@ -24,7 +19,7 @@ extern "C"
                 } while (arr[j] > pivot);
                 if (i > j)
                     break;
-                int temp = arr[i];
+                double temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
@@ -33,7 +28,7 @@ extern "C"
         }
     }
 
-    void sort(int *base, int size)
+    void sort(double *base, int size)
     {
         _quicksort(base, 0, size - 1);
     }

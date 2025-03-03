@@ -1,6 +1,6 @@
 #include<algorithm>
 extern "C" {
-    void sort(int arr[], int n) {
+    void sort(double arr[], int n) {
         std::sort(arr, arr+n);
     }
 }

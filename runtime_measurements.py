@@ -1,5 +1,6 @@
 import ctypes
 import timeit
+import time
 import numpy
 
 class BaseRuntime:
@@ -7,10 +8,7 @@ class BaseRuntime:
         pass
     
     def measure_runtime(self, data: list, repeat: int):
-        results = []
-        for i in range(repeat):
-            self.args = self.prepare_data(data)
-            results += [timeit.timeit(self.execute_sort, number=1)]
+        results = timeit.Timer(self.execute_sort, lambda: self.prepare_data(data), timer=time.perf_counter, globals=globals()).repeat(repeat, 1)
         return results
     
     def execute_sort(self):
@@ -21,8 +19,8 @@ class CppSortRuntime(BaseRuntime):
         self.lib = ctypes.CDLL(lib_path)
 
     def prepare_data(self, data: list):
-        arr = (ctypes.c_int * len(data))(*data)
-        return [arr, len(data)]
+        arr = (ctypes.c_double * len(data))(*data)
+        self.args=[arr, len(data)]
     
     def measure_runtime(self, data: list, repeat: int):
         return super().measure_runtime(data, repeat)
@@ -35,7 +33,7 @@ class NumpySortRuntime(BaseRuntime):
         return super().measure_runtime(data, repeat)
 
     def prepare_data(self, data: list):
-        return [data.copy()]
+        self.args = [numpy.array(data)]
     
     def execute_sort(self):
         numpy.sort(self.args[0])
