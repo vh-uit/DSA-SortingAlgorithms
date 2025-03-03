@@ -2,6 +2,7 @@ import pandas as pd
 import ast
 import matplotlib.pyplot as plt
 import glob
+import random
 
 # Load the CSV data from all files starting with 'output' in the data folder
 file_paths = glob.glob('data/output*.csv')
@@ -16,6 +17,7 @@ def plot_multiple_columns(df):
     algorithms = df['Algorithm'].unique()
     data_sets = df['Data set #'].unique()
     avg_runtimes = {data_set: [] for data_set in data_sets}
+    avg_table = pd.DataFrame(index=algorithms, columns=data_sets)
 
     for data_set in data_sets:
         for algorithm in algorithms:
@@ -23,8 +25,10 @@ def plot_multiple_columns(df):
             if not subset.empty:
                 avg_runtime = subset['Runtime'].apply(lambda x: sum(x) / len(x)).mean()
                 avg_runtimes[data_set].append(avg_runtime)
+                avg_table.at[algorithm, data_set] = avg_runtime
             else:
                 avg_runtimes[data_set].append(0)
+                avg_table.at[algorithm, data_set] = 0
 
     bar_width = 0.05  # Smaller bar width
     index = range(len(algorithms))
@@ -33,11 +37,11 @@ def plot_multiple_columns(df):
     for i, data_set in enumerate(data_sets):
         if data_set == 0:
             color = 'darkgreen'
-        elif data_set == 9:
+        elif data_set == 1:
             color = 'darkred'
-        elif 1 <= data_set <= 8:
-            color_intensity = 0.1 + (data_set - 1) * 0.1
-            color = (0, 0, 1 - color_intensity, 1)  # Blue to orange gradient
+        elif 2 <= data_set <= 9:
+            color_intensity = 0.1 + (data_set - 2) * 0.1
+            color = (0, 0.4 - color_intensity*0.4, 1 - color_intensity*0.9, 1) 
         plt.bar([p + bar_width * i for p in index], avg_runtimes[data_set], width=bar_width, label=f'Data set {data_set}', color=color)
 
     plt.xlabel('Algorithm')
@@ -48,6 +52,9 @@ def plot_multiple_columns(df):
     plt.tight_layout()
     plt.savefig('charts/multiple_columns_swapped.png')
     plt.close()
+
+    # Save the average table to a CSV file
+    avg_table.to_csv('charts/average_runtime_table.csv')
 
 # Plot the multiple columns graph
 plot_multiple_columns(df)
