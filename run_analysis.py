@@ -22,5 +22,6 @@ with gzip.open(input_csv_path + '.gz', 'rt', newline='') as f, open(output_csv_p
         data = list(map(float, row))
         for name, runtime in runtime_configs:
             result = runtime.measure_runtime(data, repeat_time)
+            runtime.check_correctness()
             writer.writerow([data_index, name, result])
             print(f"Data set #{data_index} - {name}: {result}")
